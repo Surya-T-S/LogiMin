@@ -53,7 +53,7 @@ export default function ExpressionSolver() {
             placeholder="e.g. (X+Y)(X+Z) or A'B + AB' + AB"
             className="input-lg w-full"
           />
-          <p className="mt-2 text-xs text-slate-500">Operators: + for OR, · or implicit for AND, ' or ~ for NOT. Parentheses supported.</p>
+          <p className="mt-2 text-xs text-slate-500">Operators: + for OR, · or implicit for AND, &#39; or ~ for NOT. Parentheses supported.</p>
         </div>
         <div className="flex items-center gap-2">
           <button
