@@ -73,9 +73,13 @@ export default function HomePage() {
         )}
       </AnimatePresence>
 
-      {/* Social links only */}
-      <div className="mt-8 text-center">
-        <SocialLinks />
+      {/* Social links and visitor counter */}
+      <div className="mt-10 text-center">
+        <SocialLinks
+          githubUrl="https://github.com/Surya-T-S"
+          linkedinUrl="https://www.linkedin.com/in/surya-t-s-9bb93432a?utm_source=share&utm_campaign=share_via&utm_content=profile&utm_medium=android_app"
+          instagramUrl="https://www.instagram.com/_surya.ts_?igsh=MTd1YTFmNXF1Y2w1bg=="
+        />
       </div>
     </main>
   )

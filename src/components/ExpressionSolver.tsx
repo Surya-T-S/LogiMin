@@ -29,13 +29,41 @@ export default function ExpressionSolver() {
     }
   }, [debounced])
 
-  function copyText(text: string, key: string) {
+  async function copyText(text: string, key: string) {
     if (!text) return
+    const fallbackCopy = (t: string) => {
+      const ta = document.createElement('textarea')
+      // iOS Safari requires the element to be visible and selectable
+      ta.value = t
+      ta.setAttribute('readonly', '')
+      ta.style.position = 'fixed'
+      ta.style.top = '0'
+      ta.style.left = '0'
+      ta.style.opacity = '0.001'
+      ta.style.pointerEvents = 'none'
+      document.body.appendChild(ta)
+      ta.focus()
+      ta.select()
+      try {
+        document.execCommand('copy')
+      } catch {}
+      document.body.removeChild(ta)
+    }
+
     try {
-      navigator.clipboard.writeText(text)
+      if (navigator?.clipboard?.writeText) {
+        await navigator.clipboard.writeText(text)
+      } else {
+        fallbackCopy(text)
+      }
       setCopied(key)
       window.setTimeout(() => setCopied((k) => (k === key ? null : k)), 1200)
-    } catch {}
+    } catch {
+      // final fallback to ensure some attempt was made
+      try { fallbackCopy(text) } catch {}
+      setCopied(key)
+      window.setTimeout(() => setCopied((k) => (k === key ? null : k)), 1200)
+    }
   }
 
   return (

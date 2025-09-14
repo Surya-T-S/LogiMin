@@ -1,0 +1,101 @@
+Visitor Counter Setup (7‑segment) for LogiMin
+==============================================
+
+Service used
+- Recommended: Upstash Redis REST (free tier) — highly reliable managed Redis with HTTPS REST API.
+  Docs: https://upstash.com (create DB) and REST API docs.
+- Automatic fallback: Abacus (https://abacus.jasoncameron.dev) — free CountAPI alternative used only if Upstash is not configured.
+  Both are called through the Next.js API route at `src/app/api/visits/route.ts`.
+
+What you need to provide
+- For Upstash (recommended):
+  - `UPSTASH_REDIS_REST_URL`
+  - `UPSTASH_REDIS_REST_TOKEN`
+- Counter identity (used for both providers):
+  - `VISITOR_NAMESPACE` (e.g., your‑domain or project name)
+  - `VISITOR_KEY` (e.g., site‑visits)
+- Optional Abacus fallback variables (only used if Upstash vars are missing):
+  - `ABACUS_NAMESPACE`
+  - `ABACUS_KEY`
+- Optional: social URLs (so you can change them without editing code):
+  - `NEXT_PUBLIC_GITHUB_URL`
+  - `NEXT_PUBLIC_LINKEDIN_URL`
+  - `NEXT_PUBLIC_INSTAGRAM_URL`
+- Optional: an initial value (use Abacus `create` with `initializer`, see below).
+
+Overview
+- The tiny 7‑segment display at the bottom shows the total number of visitors.
+- Persistence is powered by Upstash Redis REST; if not configured, it falls back to Abacus.
+- To avoid inflating numbers during development, each browser/device increments ONCE using localStorage flag "logimin-visit-counted".
+
+Quick start (no configuration)
+- If you do nothing, the app falls back to Abacus using the default namespace/key `logimin/site-visits`.
+- Recommended: configure Upstash as below for best reliability.
+
+Upstash setup (recommended)
+1) Create a free Upstash Redis database at https://console.upstash.com/redis
+2) In the database, copy these values from the REST API section:
+   - UPSTASH_REDIS_REST_URL
+   - UPSTASH_REDIS_REST_TOKEN
+3) Create `.env.local` in the project root with:
+   UPSTASH_REDIS_REST_URL=<<your-url>>
+   UPSTASH_REDIS_REST_TOKEN=<<your-token>>
+   VISITOR_NAMESPACE=logimin-surya   # choose your own
+   VISITOR_KEY=prod-site-visits      # choose your own
+
+4) Restart the dev server. The counter will now use Upstash.
+
+Optional initialization with Upstash (set a starting value):
+- From a terminal (do not expose your token in the browser):
+  curl -H "Authorization: Bearer $UPSTASH_REDIS_REST_TOKEN" \
+       "$UPSTASH_REDIS_REST_URL/set/$(printf '%s:%s' "$VISITOR_NAMESPACE" "$VISITOR_KEY" | sed 's/:/%3A/g')/0"
+
+Deploying
+- Add the same env vars in your host’s Environment Variables UI (Vercel/Netlify):
+  UPSTASH_REDIS_REST_URL, UPSTASH_REDIS_REST_TOKEN, VISITOR_NAMESPACE, VISITOR_KEY
+
+Social links (optional via env)
+- You can override social links without changing code by using:
+   NEXT_PUBLIC_GITHUB_URL=https://github.com/your-profile
+   NEXT_PUBLIC_LINKEDIN_URL=https://www.linkedin.com/in/your-profile
+   NEXT_PUBLIC_INSTAGRAM_URL=https://www.instagram.com/your-profile
+
+How the count works
+- On first page load per device, the client calls /api/visits?inc=1 which increments the counter via Upstash if configured, otherwise via Abacus (creating it if needed).
+- Subsequent loads on the same device call /api/visits (no increment) until localStorage is cleared.
+- The API route is marked dynamic to avoid caching, always returning the live value.
+
+Testing locally
+- Visit the homepage; you should see the counter update.
+- To simulate a new visitor: open DevTools > Application > Local Storage and remove the key "logimin-visit-counted", then refresh.
+- You can also directly hit: http://localhost:3000/api/visits?inc=1
+
+Resetting or setting a specific value
+- With Upstash (using your REST TOKEN; use curl or server-side tools):
+  - Set to 0:  GET $UPSTASH_REDIS_REST_URL/set/<ns:key>/0
+  - Set to N:  GET $UPSTASH_REDIS_REST_URL/set/<ns:key>/<N>
+  - Get value: GET $UPSTASH_REDIS_REST_URL/get/<ns:key>
+  - Incr by 1: GET $UPSTASH_REDIS_REST_URL/incr/<ns:key>
+  Add header:  Authorization: Bearer <UPSTASH_REDIS_REST_TOKEN>
+
+Fallback (if Upstash not configured)
+- Abacus create with initializer (returns admin_key):
+  GET https://abacus.jasoncameron.dev/create/<namespace>/<key>?initializer=<number>
+- Abacus reset to zero (requires admin key):
+  POST https://abacus.jasoncameron.dev/reset/<namespace>/<key>
+  Header: Authorization: Bearer <ADMIN_KEY>
+
+Handling failures
+- If Upstash is configured and reachable, it is used.
+- If Upstash is configured but unreachable, the API falls back to Abacus automatically.
+- If neither provider is reachable, the UI shows "--" and does not throw errors.
+
+Customizing the display
+- Component: src/components/VisitorCounter.tsx (edit digit size/thickness there)
+- Styles:  .sevenseg classes in src/app/globals.css (font color and spacing)
+- Position: src/components/SocialLinks.tsx (placed to the right of LinkedIn with a divider)
+
+Privacy notes
+- Abacus stores only the counter value. There is no personal data collection. The client only uses localStorage to avoid multiple increments from the same device.
+
+That’s it! If you need a database-backed solution instead of Abacus, we can switch to a tiny KV store or a serverless DB.
