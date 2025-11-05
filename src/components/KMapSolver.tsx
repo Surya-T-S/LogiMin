@@ -10,8 +10,8 @@ import { solveExpression, formatPOS, implicantToSum } from '@/lib/boolean/engine
 import { minimizeSOP } from '@/lib/boolean/qmc'
 
 const GROUP_COLORS = ['#f97316', '#22c55e', '#8b5cf6', '#ef4444', '#06b6d4', '#eab308', '#14b8a6', '#f43f5e']
-const HEADER_SIZE = '2.6rem'
-const CELL_SIZE_VALUE = 'min(2.5rem, 10vw)'
+const HEADER_SIZE = 'min(3rem, 12vw)'
+const CELL_SIZE_VALUE = 'min(3rem, 12vw)'
 const LOOP_INSET_PX = 4
 const LOOP_RADIUS_PX = 12
 const LOOP_STROKE_PX = 2.4
@@ -56,8 +56,8 @@ function buildCyclicSegments(indices: Set<number>, total: number): Segment[] {
   return sorted.map((value) => ({ start: value, span: 1 }))
 }
 
-type CellProps = { value: 0 | 1 | 'X'; onClick: () => void; highlight?: string | null; size: string; zebraClass?: string }
-const Cell: React.FC<CellProps> = ({ value, onClick, highlight, size, zebraClass }) => {
+type CellProps = { value: 0 | 1 | 'X'; onClick: () => void; highlight?: string | null; size: string; zebraClass?: string; cornerClass?: string }
+const Cell: React.FC<CellProps> = ({ value, onClick, highlight, size, zebraClass, cornerClass }) => {
   const display = value === 'X' ? 'X' : String(value)
 
   let className = zebraClass ?? 'bg-white text-slate-800'
@@ -66,6 +66,7 @@ const Cell: React.FC<CellProps> = ({ value, onClick, highlight, size, zebraClass
   const cellStyle: React.CSSProperties = {
     width: size,
     height: size,
+    border: 'none',
     ...(highlight
       ? {
           boxShadow: `inset 0 0 0 1px ${colorWithAlpha(highlight, 0.35)}`,
@@ -74,10 +75,14 @@ const Cell: React.FC<CellProps> = ({ value, onClick, highlight, size, zebraClass
       : {}),
   }
 
+  const combinedClassName = ['flex items-center justify-center border-0 text-sm font-medium transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-sky-400/60', className, cornerClass]
+    .filter(Boolean)
+    .join(' ')
+
   return (
     <button
       onClick={onClick}
-      className={`flex items-center justify-center text-sm font-medium transition-colors ${className}`}
+      className={combinedClassName}
       style={cellStyle}
     >
       {display}
@@ -216,6 +221,9 @@ export default function KMapSolver() {
     const axisVars = swapRC ? rowVarsBase : colVarsBase
     return order.map((value) => formatHeaderCombo(value, axisVars, bits))
   }, [swapRC, shape, rowVarsBase, colVarsBase])
+
+  const displayRows = swapRC ? shape.cols : shape.rows
+  const displayCols = swapRC ? shape.rows : shape.cols
 
   // Map minterm index -> group color (first group wins for simplicity)
   const groupsActive = groupMode === 'sop' ? groupsSOP : groupsPOS
@@ -472,35 +480,47 @@ export default function KMapSolver() {
           >
             Rows: <span className="font-mono">{rowVars.join(' ')}</span>
           </div>
-          <div className="relative inline-block rounded-lg border border-slate-300 bg-white/95 shadow-sm">
+          <div className="relative inline-block overflow-hidden rounded-2xl bg-transparent">
             {/* Grid including header row/col */}
             <div
               className="grid select-none"
               style={{ gridTemplateColumns: `minmax(var(--kmap-header), auto) repeat(${swapRC ? shape.rows : shape.cols}, var(--kmap-cell))` }}
             >
               {/* Top-left blank header cell */}
-              <div style={{ width: 'var(--kmap-header)', height: cellSize }} className="flex items-center justify-center text-[11px] text-slate-400">{/* corner */}</div>
+              <div style={{ width: 'var(--kmap-header)', height: cellSize }} className="flex items-center justify-center rounded-tl-2xl bg-slate-100 text-[11px] text-slate-400">{/* corner */}</div>
               {/* Column headers (Gray code) */}
               {Array.from({ length: swapRC ? shape.rows : shape.cols }, (_, c) => (
-                <div key={`ch-${c}`} style={{ width: cellSize, height: cellSize }} className="flex items-center justify-center border border-slate-200 bg-slate-100 font-mono text-xs font-medium text-slate-700">
+                <div
+                  key={`ch-${c}`}
+                  style={{ width: cellSize, height: cellSize }}
+                  className={`flex items-center justify-center bg-slate-100 font-mono text-xs font-medium text-slate-700 ${c === displayCols - 1 ? 'rounded-tr-2xl' : ''}`}
+                >
                   {colLabels[c]}
                 </div>
               ))}
 
               {/* Rows: header + cells */}
-              {Array.from({ length: swapRC ? shape.cols : shape.rows }, (_, r) => (
+              {Array.from({ length: displayRows }, (_, r) => (
                 <React.Fragment key={`r-${r}`}>
                   {/* Row header */}
-                  <div style={{ width: 'var(--kmap-header)', height: cellSize }} className="flex items-center justify-center border border-slate-200 bg-slate-100 font-mono text-xs font-medium text-slate-700">
+                  <div
+                    style={{ width: 'var(--kmap-header)', height: cellSize }}
+                    className={`flex items-center justify-center bg-slate-100 font-mono text-xs font-medium text-slate-700 ${r === displayRows - 1 ? 'rounded-bl-2xl' : ''}`}
+                  >
                     {rowLabels[r]}
                   </div>
-                  {Array.from({ length: swapRC ? shape.rows : shape.cols }, (_, c) => {
+                  {Array.from({ length: displayCols }, (_, c) => {
                     const r0 = swapRC ? c : r
                     const c0 = swapRC ? r : c
                     const v: CellValue = (grid[r0]?.[c0] ?? 0) as CellValue
                     const m = rcToIndex(r0, c0, shape)
                     const color = mToColor[m] ?? null
                     const zebra = (r + c) % 2 === 0 ? 'bg-white text-slate-800' : 'bg-slate-50 text-slate-800'
+                    let cornerClass = ''
+                    if (r === 0 && c === 0) cornerClass = 'rounded-tl-2xl'
+                    else if (r === 0 && c === displayCols - 1) cornerClass = 'rounded-tr-2xl'
+                    else if (r === displayRows - 1 && c === 0) cornerClass = 'rounded-bl-2xl'
+                    else if (r === displayRows - 1 && c === displayCols - 1) cornerClass = 'rounded-br-2xl'
                     return (
                       <Cell
                         key={`${r}-${c}`}
@@ -508,6 +528,7 @@ export default function KMapSolver() {
                         highlight={color}
                         size={cellSize}
                         zebraClass={zebra}
+                        cornerClass={cornerClass}
                         onClick={() => {
                           setCells((prev: Array<0 | 1 | 'X'>) => {
                             const next = [...prev]
