@@ -18,6 +18,20 @@ export interface MinimizeResult {
   steps: MinimizeStep[]
 }
 
+function getLayoutBits(numVars: number): { rowBits: number; colBits: number } {
+  const presets: Record<number, { rowBits: number; colBits: number }> = {
+    2: { rowBits: 1, colBits: 1 },
+    3: { rowBits: 1, colBits: 2 },
+    4: { rowBits: 2, colBits: 2 },
+    5: { rowBits: 2, colBits: 3 },
+    6: { rowBits: 3, colBits: 3 },
+  }
+  if (presets[numVars]) return presets[numVars]
+  const rowBits = Math.floor(numVars / 2)
+  const colBits = numVars - rowBits
+  return { rowBits, colBits }
+}
+
 const popcount32 = (x: number) => {
   x = x - ((x >>> 1) & 0x55555555)
   x = (x & 0x33333333) + ((x >>> 2) & 0x33333333)
@@ -130,17 +144,38 @@ export function minimizeSOP(minterms: number[], dontCares: number[], numVars: nu
   if (remaining.length > 0) {
     const solutions = petrick(remaining.map(i => cover[i]))
     // Evaluate cost
-    let best: { set: Set<number>, impCount: number, litCount: number } | null = null
+    const { rowBits, colBits } = getLayoutBits(numVars)
+    const rowMask = ((1 << rowBits) - 1) << colBits
+    const colMask = (1 << colBits) - 1
+    let best: { set: Set<number>, impCount: number, litCount: number, area: number, spanScore: number } | null = null
     for (const s of solutions) {
       const impCount = s.size
       let litCount = 0
+      let area = 0
+      let spanScore = 0
       for (const idx of s) {
         const m = primes[idx].mask
         const lit = numVars - popcount32(m)
         litCount += lit
+        area += 1 << popcount32(m)
+        const rowSpan = 1 << popcount32(m & rowMask)
+        const colSpan = 1 << popcount32(m & colMask)
+        spanScore += rowSpan + colSpan
       }
-      if (!best || impCount < best.impCount || (impCount === best.impCount && litCount < best.litCount)) {
-        best = { set: s, impCount, litCount }
+      const prefer = () => {
+        if (!best) return true
+        if (impCount < best.impCount) return true
+        if (impCount > best.impCount) return false
+        if (litCount < best.litCount) return true
+        if (litCount > best.litCount) return false
+        if (area > best.area) return true
+        if (area < best.area) return false
+        if (spanScore > best.spanScore) return true
+        if (spanScore < best.spanScore) return false
+        return false
+      }
+      if (prefer()) {
+        best = { set: s, impCount, litCount, area, spanScore }
       }
     }
     if (best) {
