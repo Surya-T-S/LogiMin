@@ -35,6 +35,7 @@ export default function KMapSolver() {
   const [exprInput, setExprInput] = useState('')
   const [swapRC, setSwapRC] = useState(false)
   const [groupMode, setGroupMode] = useState<'sop' | 'pos'>('sop')
+  const [varNames, setVarNames] = useState<string[]>(() => defaultVarNames(4))
 
   // Ensure cells length matches vars
   const size = 1 << vars
@@ -45,6 +46,16 @@ export default function KMapSolver() {
     })
   }, [size])
 
+  useEffect(() => {
+    setVarNames((prev) => {
+      if (prev.length === vars) return prev
+      const base = defaultVarNames(vars)
+      const limit = Math.min(prev.length, vars)
+      for (let i = 0; i < limit; i++) base[i] = prev[i]!
+      return base
+    })
+  }, [vars])
+
   const shape = useMemo(() => getKMapShape(vars), [vars])
   const grid = useMemo(() => buildGrid(cells, vars), [cells, vars])
   const mtFromCells = useMemo(() => {
@@ -53,9 +64,17 @@ export default function KMapSolver() {
     return arr
   }, [cells])
 
-  const solution = useMemo(() => solveKMap(cells, vars, defaultVarNames(vars)), [cells, vars])
+  const names = useMemo(() => {
+    if (varNames.length === vars) return varNames
+    const base = defaultVarNames(vars)
+    const limit = Math.min(varNames.length, vars)
+    for (let i = 0; i < limit; i++) base[i] = varNames[i]!
+    return base
+  }, [varNames, vars])
+
+  const solution = useMemo(() => solveKMap(cells, vars, names), [cells, vars, names])
   const posString = useMemo(() => {
-    const namesArr = defaultVarNames(vars)
+    const namesArr = names
     const maxterms: number[] = []
     const dontCares: number[] = []
     for (let i = 0; i < (1 << vars); i++) {
@@ -65,11 +84,11 @@ export default function KMapSolver() {
     }
     const res = minimizeSOP(maxterms, dontCares, vars)
     return formatPOS(res, namesArr)
-  }, [cells, vars])
+  }, [cells, vars, names])
   const groupsSOP = useMemo(() => solution.groups.map(g => ({ cells: g.cells, label: g.product })), [solution.groups])
   // Enumerate POS groups over 0-cells for grouping visualization
   const groupsPOS = useMemo(() => {
-    const namesArr = defaultVarNames(vars)
+    const namesArr = names
     const maxterms: number[] = []
     const dontCares: number[] = []
     for (let i = 0; i < (1 << vars); i++) {
@@ -107,9 +126,8 @@ export default function KMapSolver() {
       list.push({ cells: cellsArr, label: implicantToSum(imp, namesArr) })
     }
     return list
-  }, [cells, vars])
+  }, [cells, vars, names])
   const colors = ['#ef4444', '#22c55e', '#8b5cf6', '#eab308', '#06b6d4', '#f97316', '#14b8a6', '#f43f5e']
-  const names = useMemo(() => defaultVarNames(vars), [vars])
   const rowVarsBase = useMemo(() => names.slice(0, shape.rowBits), [names, shape.rowBits])
   const colVarsBase = useMemo(() => names.slice(shape.rowBits, shape.rowBits + shape.colBits), [names, shape.rowBits, shape.colBits])
   const rowVars = swapRC ? colVarsBase : rowVarsBase
@@ -169,12 +187,14 @@ export default function KMapSolver() {
     try {
       const res = solveExpression(exprInput)
       const n = res.vars.length
+      if (n < 2 || n > 6) return
       const s = 1 << n
       const next: Array<0 | 1 | 'X'> = Array.from({ length: s }, () => 0)
       const mt = res.intermediate?.minterms ?? []
       for (const i of mt) next[i] = 1
       setVars(n)
       setCells(next)
+      setVarNames(res.vars.length === n ? res.vars : defaultVarNames(n))
     } catch (e) {
       // ignore; invalid expression
     }
