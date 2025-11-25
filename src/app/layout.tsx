@@ -4,6 +4,9 @@ import './globals.css'
 export const metadata: Metadata = {
   title: 'LogiMin — Boolean & K‑Map Simplifier',
   description: 'Simplify Boolean expressions and Karnaugh maps with step-by-step explanations and interactive visualization.',
+  icons: {
+    icon: '/logo.svg',
+  },
 }
 
 export const viewport: Viewport = {

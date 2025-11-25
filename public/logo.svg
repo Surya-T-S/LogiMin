@@ -1,34 +1,54 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" fill="none">
+<svg width="64" height="64" viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg">
   <defs>
-    <linearGradient id="g1" x1="12" y1="8" x2="56" y2="56" gradientUnits="userSpaceOnUse">
-      <stop offset="0" stop-color="#0ea5e9"/>
-      <stop offset="1" stop-color="#38bdf8"/>
+    <linearGradient id="line-grad" x1="18" y1="16" x2="46" y2="48" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#22D3EE"/>
+      <stop offset="1" stop-color="#818CF8"/>
     </linearGradient>
-    <linearGradient id="g2" x1="0" y1="0" x2="1" y2="1">
-      <stop offset="0" stop-color="#fff" stop-opacity="0.9"/>
-      <stop offset="1" stop-color="#fff" stop-opacity="0.6"/>
-    </linearGradient>
-    <filter id="s" x="-20%" y="-20%" width="140%" height="140%">
-      <feDropShadow dx="0" dy="2" stdDeviation="2" flood-color="#0ea5e9" flood-opacity="0.25"/>
+    <filter id="glow" x="-40%" y="-40%" width="180%" height="180%">
+      <feGaussianBlur stdDeviation="2" result="blur"/>
+      <feComposite in="SourceGraphic" in2="blur" operator="over"/>
     </filter>
+    <style>
+      .path-l {
+        stroke-dasharray: 60;
+        stroke-dashoffset: 60;
+        animation: cycle-l 6s ease-in-out infinite;
+      }
+      .path-m {
+        stroke-dasharray: 20;
+        stroke-dashoffset: 20;
+        animation: cycle-m 6s ease-in-out infinite;
+      }
+      .dot {
+        transform-origin: 46px 26px;
+        animation: cycle-dot 6s ease-in-out infinite;
+        opacity: 0;
+      }
+      @keyframes cycle-l {
+        0% { stroke-dashoffset: 60; }
+        20%, 80% { stroke-dashoffset: 0; }
+        100% { stroke-dashoffset: 60; }
+      }
+      @keyframes cycle-m {
+        0%, 15% { stroke-dashoffset: 20; }
+        30%, 70% { stroke-dashoffset: 0; }
+        85%, 100% { stroke-dashoffset: 20; }
+      }
+      @keyframes cycle-dot {
+        0%, 25% { transform: scale(0); opacity: 0; }
+        30% { transform: scale(1.2); opacity: 1; }
+        35%, 65% { transform: scale(1); opacity: 1; }
+        50% { transform: scale(1.3); opacity: 0.8; }
+        70% { transform: scale(0); opacity: 0; }
+        100% { transform: scale(0); opacity: 0; }
+      }
+    </style>
   </defs>
-
-  <!-- Capsule background -->
-  <rect x="6" y="6" width="52" height="52" rx="14" fill="url(#g1)"/>
-  <rect x="6" y="6" width="52" height="52" rx="14" fill="#fff" opacity="0.08"/>
-
-  <!-- Logic nodes + traces -->
-  <g filter="url(#s)">
-    <!-- Traces -->
-    <path d="M18 40c6-8 12-8 18-16 4-5 8-6 10-6" stroke="url(#g2)" stroke-width="3" stroke-linecap="round"/>
-    <path d="M18 24c8 0 14 6 20 12" stroke="url(#g2)" stroke-width="3" stroke-linecap="round"/>
-    <!-- Nodes -->
-    <circle cx="18" cy="24" r="3.3" fill="#fff"/>
-    <circle cx="18" cy="40" r="3.3" fill="#fff"/>
-    <circle cx="36" cy="24" r="3.3" fill="#fff"/>
-    <circle cx="46" cy="18" r="3.3" fill="#fff"/>
+  <rect width="64" height="64" rx="16" fill="#0F172A"/>
+  <rect x="1" y="1" width="62" height="62" rx="15" stroke="white" stroke-opacity="0.1" stroke-width="2"/>
+  <g filter="url(#glow)" stroke="url(#line-grad)" stroke-width="6" stroke-linecap="round" stroke-linejoin="round">
+    <path class="path-l" d="M18 16 V 42 A 6 6 0 0 0 24 48 H 46"/>
+    <path class="path-m" d="M46 48 V 32"/>
+    <circle class="dot" cx="46" cy="26" r="3" fill="#22D3EE" stroke="none"/>
   </g>
-
-  <!-- Subtle gloss -->
-  <path d="M12 14c0 0 6-6 20-6s20 6 20 6" stroke="#fff" stroke-opacity="0.25" stroke-width="4" stroke-linecap="round"/>
 </svg>
