@@ -18,11 +18,11 @@ body {
   font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", "SF Pro Display", "Segoe UI", Roboto, Helvetica, Arial, "Apple Color Emoji", "Segoe UI Emoji";
   /* Default: light background over blueprint image */
   background-image:
-    /* Elegant Theme: Silk, Pearl & Platinum */
-    radial-gradient(at 0% 0%, rgba(248, 250, 252, 0.9) 0px, transparent 60%), /* Cool White */
-    radial-gradient(at 100% 0%, rgba(241, 245, 249, 0.8) 0px, transparent 50%), /* Platinum */
-    radial-gradient(at 100% 100%, rgba(255, 250, 240, 0.6) 0px, transparent 50%), /* Floral White */
-    radial-gradient(at 0% 100%, rgba(243, 244, 246, 0.6) 0px, transparent 50%), /* Gray 100 */
+    /* Satisfying Theme: Fresh Air & Subtle Aurora */
+    radial-gradient(at 0% 0%, rgba(224, 242, 254, 0.7) 0px, transparent 50%), /* Sky 100 */
+    radial-gradient(at 100% 0%, rgba(236, 254, 255, 0.6) 0px, transparent 50%), /* Cyan 50 */
+    radial-gradient(at 100% 100%, rgba(245, 243, 255, 0.6) 0px, transparent 50%), /* Violet 50 */
+    radial-gradient(at 0% 100%, rgba(255, 255, 255, 0.8) 0px, transparent 60%), /* Pure White Base */
     url('/blueprint-grid.svg');
   background-size: 100% 100%, 100% 100%, 100% 100%, 100% 100%, cover;
   background-position: center;

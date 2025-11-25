@@ -1,7 +1,7 @@
 "use client"
 
 import React, { useEffect, useMemo, useRef, useState, type ChangeEvent } from 'react'
-import { motion } from 'framer-motion'
+import { AnimatePresence, motion } from 'framer-motion'
 import { buildGrid, defaultVarNames, getKMapShape, rcToIndex, indexToRC, solveKMap, type CellValue } from '@/lib/boolean/kmap'
 import TruthTable from '@/components/TruthTable'
 import GateDiagram from '@/components/GateDiagram'
@@ -77,10 +77,31 @@ const Cell: React.FC<CellProps> = ({ value, onClick, highlight, size, zebraClass
   return (
     <button
       onClick={onClick}
-      className={`flex items-center justify-center text-sm font-medium transition-all duration-75 active:scale-90 ${className}`}
+      className={`relative flex items-center justify-center overflow-hidden text-sm font-medium transition-all duration-200 active:scale-90 ${className}`}
       style={cellStyle}
     >
-      {display}
+      <AnimatePresence mode="popLayout" initial={false}>
+        <motion.span
+          key={display}
+          initial={{ opacity: 0, scale: 0.5, y: 5 }}
+          animate={{ opacity: 1, scale: 1, y: 0 }}
+          exit={{ opacity: 0, scale: 0.5, y: -5 }}
+          transition={{ duration: 0.2, ease: "backOut" }}
+          className="absolute inset-0 flex items-center justify-center"
+        >
+          {display}
+        </motion.span>
+      </AnimatePresence>
+      {highlight && (
+        <motion.div
+          layoutId={`highlight-${highlight}`}
+          className="absolute inset-0 pointer-events-none"
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          exit={{ opacity: 0 }}
+          style={{ backgroundColor: colorWithAlpha(highlight, 0.1) }}
+        />
+      )}
     </button>
   )
 }
