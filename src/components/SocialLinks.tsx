@@ -28,10 +28,11 @@ export default function SocialLinks({ githubUrl, linkedinUrl, instagramUrl }: Pr
           rel="noopener noreferrer"
           aria-label="GitHub"
           title="GitHub"
-          className="icon-btn h-9 w-9"
+          className="group relative flex h-10 w-10 items-center justify-center rounded-full bg-white/10 text-white shadow-lg backdrop-blur-md transition-all duration-300 hover:scale-110 hover:bg-white/20 hover:shadow-xl hover:shadow-white/20"
         >
-          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" className="h-5 w-5">
-            <path fill="#181717" fillRule="evenodd" d="M12 2C6.48 2 2 6.58 2 12.25c0 4.52 2.87 8.35 6.84 9.71.5.1.68-.23.68-.5 0-.25-.01-.92-.01-1.81-2.78.62-3.37-1.2-3.37-1.2-.45-1.18-1.1-1.49-1.1-1.49-.9-.63.07-.62.07-.62 1 .07 1.52 1.05 1.52 1.05.89 1.57 2.34 1.12 2.91.86.09-.66.35-1.12.63-1.38-2.22-.26-4.56-1.14-4.56-5.08 0-1.12.39-2.03 1.03-2.75-.1-.26-.45-1.31.1-2.73 0 0 .84-.27 2.75 1.05.8-.23 1.66-.35 2.51-.35s1.71.12 2.51.35c1.91-1.32 2.75-1.05 2.75-1.05.55 1.42.2 2.47.1 2.73.64.72 1.03 1.63 1.03 2.75 0 3.95-2.34 4.81-4.57 5.06.36.32.68.94.68 1.9 0 1.37-.01 2.47-.01 2.8 0 .27.18.61.69.5A10.27 10.27 0 0 0 22 12.25C22 6.58 17.52 2 12 2z" clipRule="evenodd"/>
+          <span className="absolute inset-0 rounded-full bg-white/20 opacity-0 blur-md transition-opacity duration-300 group-hover:opacity-100" />
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" className="relative h-5 w-5" fill="currentColor">
+            <path fillRule="evenodd" d="M12 2C6.48 2 2 6.58 2 12.25c0 4.52 2.87 8.35 6.84 9.71.5.1.68-.23.68-.5 0-.25-.01-.92-.01-1.81-2.78.62-3.37-1.2-3.37-1.2-.45-1.18-1.1-1.49-1.1-1.49-.9-.63.07-.62.07-.62 1 .07 1.52 1.05 1.52 1.05.89 1.57 2.34 1.12 2.91.86.09-.66.35-1.12.63-1.38-2.22-.26-4.56-1.14-4.56-5.08 0-1.12.39-2.03 1.03-2.75-.1-.26-.45-1.31.1-2.73 0 0 .84-.27 2.75 1.05.8-.23 1.66-.35 2.51-.35s1.71.12 2.51.35c1.91-1.32 2.75-1.05 2.75-1.05.55 1.42.2 2.47.1 2.73.64.72 1.03 1.63 1.03 2.75 0 3.95-2.34 4.81-4.57 5.06.36.32.68.94.68 1.9 0 1.37-.01 2.47-.01 2.8 0 .27.18.61.69.5A10.27 10.27 0 0 0 22 12.25C22 6.58 17.52 2 12 2z" clipRule="evenodd"/>
           </svg>
         </a>
         <a
@@ -40,10 +41,11 @@ export default function SocialLinks({ githubUrl, linkedinUrl, instagramUrl }: Pr
           rel="noopener noreferrer"
           aria-label="LinkedIn"
           title="LinkedIn"
-          className="icon-btn h-9 w-9"
+          className="group relative flex h-10 w-10 items-center justify-center rounded-full bg-white/10 text-white shadow-lg backdrop-blur-md transition-all duration-300 hover:scale-110 hover:bg-white/20 hover:shadow-xl hover:shadow-white/20"
         >
-          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" className="h-5 w-5">
-            <path fill="#0A66C2" d="M4.98 3.5C4.98 4.88 3.86 6 2.5 6S0 4.88 0 3.5 1.12 1 2.5 1 4.98 2.12 4.98 3.5zM.5 8.5h4V23h-4zM8.5 8.5h3.83v1.97h.05c.53-1 1.83-2.05 3.77-2.05 4.03 0 4.78 2.65 4.78 6.09V23h-4v-6.5c0-1.55-.03-3.54-2.16-3.54-2.16 0-2.49 1.68-2.49 3.43V23h-4V8.5z" />
+          <span className="absolute inset-0 rounded-full bg-white/20 opacity-0 blur-md transition-opacity duration-300 group-hover:opacity-100" />
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" className="relative h-5 w-5" fill="currentColor">
+            <path d="M4.98 3.5C4.98 4.88 3.86 6 2.5 6S0 4.88 0 3.5 1.12 1 2.5 1 4.98 2.12 4.98 3.5zM.5 8.5h4V23h-4zM8.5 8.5h3.83v1.97h.05c.53-1 1.83-2.05 3.77-2.05 4.03 0 4.78 2.65 4.78 6.09V23h-4v-6.5c0-1.55-.03-3.54-2.16-3.54-2.16 0-2.49 1.68-2.49 3.43V23h-4V8.5z" />
           </svg>
         </a>
         <a
@@ -52,18 +54,11 @@ export default function SocialLinks({ githubUrl, linkedinUrl, instagramUrl }: Pr
           rel="noopener noreferrer"
           aria-label="Instagram"
           title="Instagram"
-          className="icon-btn h-9 w-9"
+          className="group relative flex h-10 w-10 items-center justify-center rounded-full bg-white/10 text-white shadow-lg backdrop-blur-md transition-all duration-300 hover:scale-110 hover:bg-white/20 hover:shadow-xl hover:shadow-white/20"
         >
-          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" className="h-5 w-5">
-            <defs>
-              <linearGradient id="ig-brand" x1="0" y1="0" x2="1" y2="1">
-                <stop offset="0" stopColor="#F58529" />
-                <stop offset="0.5" stopColor="#DD2A7B" />
-                <stop offset="0.75" stopColor="#8134AF" />
-                <stop offset="1" stopColor="#515BD4" />
-              </linearGradient>
-            </defs>
-            <path fill="url(#ig-brand)" d="M7 2C4.243 2 2 4.243 2 7v10c0 2.757 2.243 5 5 5h10c2.757 0 5-2.243 5-5V7c0-2.757-2.243-5-5-5H7zm10 2c1.654 0 3 1.346 3 3v10c0 1.654-1.346 3-3 3H7c-1.654 0-3-1.346-3-3V7c0-1.654 1.346-3 3-3h10zm-5 3.5a5.5 5.5 0 1 0 0 11 5.5 5.5 0 0 0 0-11zm0 2a3.5 3.5 0 1 1 0 7 3.5 3.5 0 0 1 0-7zm5-2.25a1.25 1.25 0 1 0 0 2.5 1.25 1.25 0 0 0 0-2.5z" />
+          <span className="absolute inset-0 rounded-full bg-white/20 opacity-0 blur-md transition-opacity duration-300 group-hover:opacity-100" />
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" className="relative h-5 w-5" fill="currentColor">
+            <path d="M7 2C4.243 2 2 4.243 2 7v10c0 2.757 2.243 5 5 5h10c2.757 0 5-2.243 5-5V7c0-2.757-2.243-5-5-5H7zm10 2c1.654 0 3 1.346 3 3v10c0 1.654-1.346 3-3 3H7c-1.654 0-3-1.346-3-3V7c0-1.654 1.346-3 3-3h10zm-5 3.5a5.5 5.5 0 1 0 0 11 5.5 5.5 0 0 0 0-11zm0 2a3.5 3.5 0 1 1 0 7 3.5 3.5 0 0 1 0-7zm5-2.25a1.25 1.25 0 1 0 0 2.5 1.25 1.25 0 0 0 0-2.5z" />
           </svg>
         </a>
       </div>

@@ -25,23 +25,23 @@ export default function HomePage() {
             </div>
           </div>
           <div className="flex items-center gap-3 sm:justify-end">
-            <nav className="segmented relative flex w-full max-w-xs items-center">
+            <nav className="relative flex w-full max-w-xs items-center rounded-full border border-white/20 bg-white/10 p-1 shadow-lg backdrop-blur-xl dark:border-white/10 dark:bg-slate-900/20">
               <motion.div
                 layout
-                className="indicator pointer-events-none"
-                style={{ position: 'absolute', width: 'calc(50% - 8px)', left: 4, top: 4, bottom: 4 }}
-                animate={{ left: tab === 'expr' ? 4 : 'calc(50% + 4px)' }}
-                transition={{ type: 'spring', stiffness: 520, damping: 38, mass: 0.18 }}
+                className="absolute rounded-full bg-white/80 shadow-sm ring-1 ring-black/5 backdrop-blur-sm dark:bg-slate-700/80 dark:ring-white/10"
+                style={{ width: 'calc(50% - 4px)', top: 4, bottom: 4 }}
+                animate={{ left: tab === 'expr' ? 4 : 'calc(50%)' }}
+                transition={{ type: 'spring', stiffness: 400, damping: 30 }}
               />
               <button
                 onClick={() => setTab('expr')}
-                className={`relative z-10 w-1/2 rounded-full px-3 py-1.5 ${tab === 'expr' ? 'text-slate-900' : 'text-slate-600'}`}
+                className={`relative z-10 w-1/2 rounded-full px-3 py-1.5 text-sm font-medium transition-all duration-200 active:scale-95 ${tab === 'expr' ? 'text-slate-900 dark:text-slate-100' : 'text-slate-700 hover:text-slate-900 dark:text-slate-300 dark:hover:text-slate-100'}`}
               >
                 Expression
               </button>
               <button
                 onClick={() => setTab('kmap')}
-                className={`relative z-10 w-1/2 rounded-full px-3 py-1.5 ${tab === 'kmap' ? 'text-slate-900' : 'text-slate-600'}`}
+                className={`relative z-10 w-1/2 rounded-full px-3 py-1.5 text-sm font-medium transition-all duration-200 active:scale-95 ${tab === 'kmap' ? 'text-slate-900 dark:text-slate-100' : 'text-slate-700 hover:text-slate-900 dark:text-slate-300 dark:hover:text-slate-100'}`}
               >
                 K‑Map
               </button>

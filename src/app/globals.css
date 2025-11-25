@@ -10,6 +10,7 @@
 
 html, body, #__next {
   height: 100%;
+  overflow-y: scroll; /* Prevent layout shift from scrollbar */
 }
 
 body {
@@ -17,16 +18,25 @@ body {
   font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", "SF Pro Display", "Segoe UI", Roboto, Helvetica, Arial, "Apple Color Emoji", "Segoe UI Emoji";
   /* Default: light background over blueprint image */
   background-image:
-    /* premium cool-toned overlay for readability while showcasing the grid */
-    linear-gradient(180deg, rgba(251,253,255,0.56), rgba(231,240,255,0.56)),
-    radial-gradient(900px 450px at 50% 2%, rgba(255,255,255,0.14), transparent),
-    radial-gradient(1200px 600px at 20% -10%, rgba(14,165,233,0.14), transparent),
-    radial-gradient(1000px 500px at 80% -20%, rgba(99,102,241,0.12), transparent),
-    url('/blueprint-grid.svg'); /* vector blueprint grid */
-  background-size: auto, auto, auto, cover;
-  background-position: center top, center top, center top, center;
-  background-attachment: fixed, fixed, fixed, fixed;
+    /* Elegant Theme: Silk, Pearl & Platinum */
+    radial-gradient(at 0% 0%, rgba(248, 250, 252, 0.9) 0px, transparent 60%), /* Cool White */
+    radial-gradient(at 100% 0%, rgba(241, 245, 249, 0.8) 0px, transparent 50%), /* Platinum */
+    radial-gradient(at 100% 100%, rgba(255, 250, 240, 0.6) 0px, transparent 50%), /* Floral White */
+    radial-gradient(at 0% 100%, rgba(243, 244, 246, 0.6) 0px, transparent 50%), /* Gray 100 */
+    url('/blueprint-grid.svg');
+  background-size: 100% 100%, 100% 100%, 100% 100%, 100% 100%, cover;
+  background-position: center;
+  background-attachment: fixed;
   transition: background 300ms ease, color 200ms ease;
+}
+
+@keyframes float {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-4px); }
+}
+
+.animate-float {
+  animation: float 3s ease-in-out infinite;
 }
 
 /* Theme: Dark */
@@ -83,8 +93,29 @@ svg.circuit * { shape-rendering: geometricPrecision; vector-effect: non-scaling-
 .tt-row-alt { background-color: rgba(248,250,252,0.6); }
 [data-theme='dark'] .tt-row-alt { background-color: rgba(31,41,55,0.3); }
 
-.input-lg { border-radius: 1rem; border:1px solid rgba(255,255,255,0.4); background-color: rgba(255,255,255,0.4); padding: 0.75rem 1rem; font-size: 1rem; box-shadow: inset 0 1px 2px rgba(0,0,0,0.06); -webkit-backdrop-filter: blur(18px); backdrop-filter: blur(18px); outline: none; }
-.input-lg:focus { border-color: #0ea5e9; box-shadow: 0 0 0 2px rgba(0, 174, 255, 0.25); }
+.input-lg {
+  border-radius: 1rem;
+  border: 1px solid transparent;
+  background-color: rgba(255, 255, 255, 0.6);
+  padding: 0.75rem 1rem;
+  font-size: 1rem;
+  box-shadow:
+    inset 0 2px 4px rgba(0, 0, 0, 0.02),
+    0 1px 2px rgba(0, 0, 0, 0.02),
+    0 0 0 1px rgba(0, 0, 0, 0.04); /* Faux border */
+  -webkit-backdrop-filter: blur(18px);
+  backdrop-filter: blur(18px);
+  outline: none;
+  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+}
+.input-lg:focus {
+  background-color: #ffffff;
+  box-shadow:
+    0 0 0 4px rgba(15, 23, 42, 0.06), /* Slate 900 ring, very subtle */
+    0 1px 2px rgba(0, 0, 0, 0.05),
+    0 0 0 1px rgba(15, 23, 42, 0.15); /* Slate border */
+  transform: scale(1.005);
+}
 [data-theme='dark'] .input-lg { border-color:#475569; background-color: rgba(2,6,23,0.24); color:#f1f5f9; -webkit-backdrop-filter: blur(18px); backdrop-filter: blur(18px); }
 .input-lg::placeholder { color:#94a3b8; }
 
@@ -93,11 +124,39 @@ svg.circuit * { shape-rendering: geometricPrecision; vector-effect: non-scaling-
 [data-theme='dark'] .min-pill { background: rgba(245,158,11,0.18); color:#fde68a; border-color: rgba(251,191,36,0.55); }
 
 /* Card overrides by theme */
-[data-theme='light'] .card { background:#ffffff; border-color:#e2e8f0; box-shadow: 0 4px 6px rgba(0,0,0,0.06); -webkit-backdrop-filter: blur(8px); backdrop-filter: blur(8px); }
+[data-theme='light'] .card {
+  background: rgba(255, 255, 255, 0.8);
+  border: 1px solid rgba(255, 255, 255, 1);
+  box-shadow:
+    0 25px 50px -12px rgba(0, 0, 0, 0.07), /* Very soft, deep shadow */
+    0 0 0 1px rgba(255, 255, 255, 0.5) inset;
+  -webkit-backdrop-filter: blur(24px);
+  backdrop-filter: blur(24px);
+}
+
+/* Distinguishable Section Panels */
+.section-panel {
+  background: rgba(255, 255, 255, 0.5);
+  border: 1px solid rgba(0, 0, 0, 0.06);
+  border-radius: 1rem;
+  padding: 1.25rem;
+  box-shadow:
+    0 2px 4px rgba(0, 0, 0, 0.02),
+    0 0 0 1px rgba(255, 255, 255, 0.5) inset;
+}
+[data-theme='dark'] .section-panel {
+  background: rgba(0, 0, 0, 0.2);
+  border-color: rgba(255, 255, 255, 0.05);
+}
+
 [data-theme='dark'] .card { background: rgba(15,23,42,0.48); border-color:#334155; box-shadow: 0 10px 15px rgba(0,0,0,0.35); -webkit-backdrop-filter: blur(8px); backdrop-filter: blur(8px); }
 
 /* Header/nav container per theme */
-[data-theme='light'] .glass-nav { background:#ffffff; border:1px solid #e2e8f0; box-shadow: 0 4px 6px rgba(0,0,0,0.06); }
+[data-theme='light'] .glass-nav {
+  background: rgba(255, 255, 255, 0.9);
+  border: 1px solid rgba(255, 255, 255, 0.5);
+  box-shadow: 0 4px 20px -2px rgba(0, 0, 0, 0.03);
+}
 [data-theme='dark'] .glass-nav { background: rgba(15,23,42,0.5); border:1px solid #334155; box-shadow: 0 10px 15px rgba(0,0,0,0.35); }
 
 /* Segmented control */

@@ -1,6 +1,7 @@
 "use client"
 
 import { useEffect, useState } from 'react'
+import { motion } from 'framer-motion'
 
 type ThemeMode = 'light' | 'dark'
 
@@ -12,17 +13,20 @@ function getStoredTheme(): ThemeMode {
 
 export default function ThemeToggle() {
   const [mode, setMode] = useState<ThemeMode>('light')
+  const [mounted, setMounted] = useState(false)
 
   useEffect(() => {
     const m = getStoredTheme()
     setMode(m)
     document.documentElement.setAttribute('data-theme', m)
+    setMounted(true)
   }, [])
 
   useEffect(() => {
+    if (!mounted) return
     document.documentElement.setAttribute('data-theme', mode)
     try { window.localStorage.setItem('theme', mode) } catch {}
-  }, [mode])
+  }, [mode, mounted])
 
   const isDark = mode === 'dark'
 
@@ -31,8 +35,6 @@ export default function ThemeToggle() {
     const doc: any = document
     if (doc && typeof doc.startViewTransition === 'function') {
       doc.startViewTransition(() => {
-        document.documentElement.setAttribute('data-theme', next)
-        try { window.localStorage.setItem('theme', next) } catch {}
         setMode(next)
       })
     } else {
@@ -40,30 +42,53 @@ export default function ThemeToggle() {
     }
   }
 
+  if (!mounted) {
+    return <div className="h-9 w-16" /> // Placeholder to prevent layout shift
+  }
+
   return (
     <button
-      role="switch"
-      aria-checked={isDark}
-      aria-label={isDark ? 'Switch to Light theme' : 'Switch to Dark theme'}
-      title={isDark ? 'Dark' : 'Light'}
       onClick={toggle}
-      className={`group relative inline-flex h-9 w-16 items-center overflow-hidden rounded-full border px-1 transition-colors ${isDark ? 'border-slate-700 bg-slate-800/80' : 'border-slate-300 bg-white'}`}
-      style={{ boxShadow: isDark ? 'inset 0 0 0 1px rgba(0,0,0,0.2)' : 'inset 0 0 0 1px rgba(0,0,0,0.06)' }}
+      className={`relative flex h-9 w-16 cursor-pointer items-center rounded-full p-1 transition-all duration-300 focus:outline-none focus-visible:ring-2 focus-visible:ring-slate-400 focus-visible:ring-offset-2 active:scale-95 hover:scale-105 ${
+        isDark ? 'bg-slate-800' : 'bg-sky-100'
+      }`}
+      aria-label={isDark ? 'Switch to Light theme' : 'Switch to Dark theme'}
     >
-      {/* labels */}
-      <span className={`pointer-events-none absolute left-2 text-[10px] font-medium ${isDark ? 'text-slate-400' : 'text-amber-500'}`}>☀︎</span>
-      <span className={`pointer-events-none absolute right-2 text-[10px] font-medium ${isDark ? 'text-sky-300' : 'text-slate-400'}`}>☾</span>
-      {/* knob */}
-      <span
-        className={`absolute top-1/2 h-7 w-7 -translate-y-1/2 rounded-full bg-gradient-to-b shadow transition-all duration-200 ${
-          isDark ? 'from-slate-600 to-slate-800 shadow-black/40' : 'from-white to-slate-100 shadow-black/10'
-        }`}
+      <motion.div
+        className="flex h-7 w-7 items-center justify-center rounded-full bg-white shadow-md"
+        layout
+        transition={{ type: "spring", stiffness: 700, damping: 30 }}
         style={{
-          left: isDark ? 'auto' : '4px',
-          right: isDark ? '4px' : 'auto',
-          border: isDark ? '1px solid rgba(0,0,0,0.4)' : '1px solid rgba(0,0,0,0.08)'
+          marginLeft: isDark ? 'auto' : '0',
+          marginRight: isDark ? '0' : 'auto'
         }}
-      />
+      >
+        <motion.div
+          key={isDark ? 'dark' : 'light'}
+          initial={{ scale: 0.5, opacity: 0, rotate: -90 }}
+          animate={{ scale: 1, opacity: 1, rotate: 0 }}
+          exit={{ scale: 0.5, opacity: 0, rotate: 90 }}
+          transition={{ duration: 0.2 }}
+        >
+          {isDark ? (
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="h-4 w-4 text-slate-700">
+              <path d="M12 3a6 6 0 0 0 9 9 9 9 0 1 1-9-9Z" />
+            </svg>
+          ) : (
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="h-4 w-4 text-amber-200">
+              <circle cx="12" cy="12" r="4" />
+              <path d="M12 2v2" />
+              <path d="M12 20v2" />
+              <path d="M4.93 4.93l1.41 1.41" />
+              <path d="M17.66 17.66l1.41 1.41" />
+              <path d="M2 12h2" />
+              <path d="M20 12h2" />
+              <path d="M6.34 17.66l-1.41 1.41" />
+              <path d="M19.07 4.93l-1.41 1.41" />
+            </svg>
+          )}
+        </motion.div>
+      </motion.div>
     </button>
   )
 }

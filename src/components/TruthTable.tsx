@@ -43,7 +43,7 @@ export default function TruthTable({ result, vars, minterms }: Props) {
   if (!rows || !headerVars) return null
 
   return (
-    <div className="rounded-lg border border-slate-200">
+    <div className="section-panel">
       <div className="flex items-center justify-between px-4 py-2">
         <h3 className="text-sm font-semibold uppercase tracking-wide text-slate-600">Truth Table</h3>
         <div className="text-xs text-slate-500">Variables order: <span className="font-mono">{headerVars.join(', ')}</span></div>

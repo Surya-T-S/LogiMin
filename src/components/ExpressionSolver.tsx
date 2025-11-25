@@ -88,41 +88,12 @@ export default function ExpressionSolver() {
             aria-label="Download PNG"
             title="Download PNG"
             onClick={() => sectionRef.current && exportElementAsPNG(sectionRef.current, 'logimin-expression.png')}
-            className="icon-btn h-9 w-9"
+            className="group flex h-9 w-9 items-center justify-center rounded-lg border border-slate-200 bg-white text-slate-500 shadow-sm transition-all hover:border-sky-200 hover:bg-sky-50 hover:text-sky-600 active:scale-95 dark:border-slate-700 dark:bg-slate-800 dark:text-slate-400 dark:hover:border-sky-800 dark:hover:bg-sky-900/30 dark:hover:text-sky-400"
           >
-            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" className="h-5 w-5">
-              <defs>
-                <linearGradient id="g-dl-png" x1="0" y1="0" x2="1" y2="1">
-                  <stop offset="0" stopColor="#06b6d4"/>
-                  <stop offset="1" stopColor="#22d3ee"/>
-                </linearGradient>
-              </defs>
-              <g stroke="url(#g-dl-png)" strokeWidth="1.6" fill="none" strokeLinecap="round" strokeLinejoin="round">
-                <rect x="4" y="6" width="16" height="12" rx="2"/>
-                <path d="M6.5 15l3.2-3.6 2.6 2.6 3.5-5 3.2 6"/>
-                <circle cx="9.5" cy="9.5" r="1.2"/>
-              </g>
-            </svg>
-          </button>
-          <button
-            aria-label="Download PDF"
-            title="Download PDF"
-            onClick={() => sectionRef.current && exportElementAsPDF(sectionRef.current, 'logimin-expression.pdf')}
-            className="icon-btn h-9 w-9"
-          >
-            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" className="h-5 w-5">
-              <defs>
-                <linearGradient id="g-dl-pdf" x1="0" y1="0" x2="1" y2="1">
-                  <stop offset="0" stopColor="#ef4444"/>
-                  <stop offset="1" stopColor="#f43f5e"/>
-                </linearGradient>
-              </defs>
-              <g stroke="url(#g-dl-pdf)" strokeWidth="1.6" fill="none" strokeLinecap="round" strokeLinejoin="round">
-                <path d="M6 4h9l3 3v13H6z"/>
-                <path d="M15 4v3h3"/>
-                <path d="M9 11h2.5c1.2 0 1.9.6 1.9 1.7s-.7 1.7-1.9 1.7H9v-3.4z"/> 
-                <path d="M9 14.4h2.6"/>
-              </g>
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="h-5 w-5">
+              <rect width="18" height="18" x="3" y="3" rx="2" ry="2" />
+              <circle cx="9" cy="9" r="2" />
+              <path d="m21 15-3.086-3.086a2 2 0 0 0-2.828 0L6 21" />
             </svg>
           </button>
         </div>
@@ -188,7 +159,7 @@ export default function ExpressionSolver() {
             <div className="text-sm text-slate-500">Type to see results…</div>
           )}
         </motion.div>
-        <motion.div layout className="rounded-lg border border-slate-200 p-4">
+        <motion.div layout className="section-panel">
           <h3 className="mb-2 text-sm font-semibold uppercase tracking-wide text-slate-600">Steps</h3>
           {error ? (
             <div className="text-sm text-red-700">Fix the error to view steps.</div>

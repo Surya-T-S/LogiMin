@@ -252,7 +252,7 @@ export default function GateDiagram({ original, minimal }: Props) {
   }, [ast])
 
   return (
-    <div className="rounded-lg border border-slate-200">
+    <div className="section-panel">
       <div className="flex items-center justify-between px-4 py-2">
         <h3 className="mb-0 text-sm font-semibold uppercase tracking-wide text-slate-600">Logic Gate</h3>
         <div className="flex items-center gap-2">
