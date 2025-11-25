@@ -7,12 +7,14 @@ import KMapSolver from '@/components/KMapSolver'
 import ThemeToggle from '@/components/ThemeToggle'
 import Image from 'next/image'
 import SocialLinks from '@/components/SocialLinks'
+import SplashLoader from '@/components/SplashLoader'
 
 export default function HomePage() {
   const [tab, setTab] = useState<'expr' | 'kmap'>('expr')
 
   return (
     <main className="container-px mx-auto max-w-7xl py-8">
+      <SplashLoader />
       <header className="glass-nav card mb-8 p-4">
         <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
           <div className="flex items-center gap-3">
